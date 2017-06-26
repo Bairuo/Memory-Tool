@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Memory Tool</title>
+
+<style type="text/css">
+<!--
+.STYLE1 {
+	font-size: large;
+	font-weight: bold;
+}
+#all{
+	margin:0 auto;
+	width:500px;
+	
+}
+-->
+</style>
+</head>
+
+<body>
+<div id="all">
+	<h1>Memory Tool</h1>
+</div>
+<p>&nbsp; </p>
+
+<div id='all'>
+<form>
+	<input type = "file" id="inputfile"/>
+	<button type="button" onclick="Display()">确定</button>
+</form>
+</div>
+
+<p>&nbsp;</p>
+
+<p>
+<div id='all'>
+  <textarea name="textarea" rows="10" id="checkview" style="width:80%"></textarea>
+</div>
+</p>
+
+<p>&nbsp;</p>
+<p>
+<div id='all'>
+  <input type = "text" id="display" readonly="true" value="中国文化" style="width:80%"/>
+  
+</div>
+</p>
+<p>&nbsp;</p>
+<div id='all'>
+<form>
+  <input type = "text" id="input" style="width:80%"/>
+  <button type="button" onclick="Check()">确定</button>
+</form>
+</div>
+
+<script>
+function Knowledge(){
+	this.dis = [];
+	this.ans = [];
+}
+
+var knowledges = [];
+var cnt = 0;
+
+function Check(){
+
+	var input = document.getElementById('input');
+	var ans = "";
+	
+	for(var i in knowledges[cnt].ans){
+		if(knowledges[cnt].ans[i] != '\n')ans += knowledges[cnt].ans[i];
+		
+	}
+		
+	if(input.value == ans){
+		alert("Correct");
+		input.value = '';
+		cnt++;
+		Show();
+	}
+}
+function Display(){
+	var	
+		fileinput = document.getElementById('inputfile'),
+		view = document.getElementById('checkview');
+	
+	var file = fileinput.files[0];
+
+
+	var reader = new FileReader();
+	reader.onload = function(){
+		view.value = this.result;
+		Init();
+	};
+	reader.readAsText(file);
+
+}
+function Init(){
+	var view = document.getElementById('checkview');
+	var display = document.getElementById('display');
+	var data = view.value;
+	var mode = 0, k = 0;
+
+	knowledges.push(new Knowledge());
+
+	for(var i in data){
+		if(mode === 0){
+			if(data[i] === ' '){
+				mode = 1;
+			}
+			else{
+				knowledges[k].dis.push(data[i]);
+			}
+		}
+		else{
+			if(data.charCodeAt(i) > 127){
+				mode = 0;
+				knowledges.push(new Knowledge());
+				k++;
+				knowledges[k].dis.push(data[i]);
+			}
+			else{
+				knowledges[k].ans.push(data[i]);
+			}
+		}		
+	}
+	cnt = 0;
+	Show();
+}
+function Show(){
+	var display = document.getElementById('display');
+	
+	display.value = '';
+	for(var i in knowledges[cnt].dis)
+		display.value = display.value + knowledges[cnt].dis[i];
+}
+
+</script>
+  
+
+</body>
+
+
+</html>
