@@ -5,13 +5,14 @@ function Knowledge(){
 
 var knowledges = [];
 var inputtext;
-var cnt = 0;
+var cnt = 0, MAX, MODE = 0; //MODE 0 English 1 Text 2 Ans Text
 var fileinput = document.getElementById('inputfile'),
-	view = document.getElementById('checkview');
-
+	view = document.getElementById('checkview'), //Console
+	ansinput = document.getElementById('input'),
+	display = document.getElementById('display'); //Prompt Message
+	
 window.onload = function(){
-	var ansinput = document.getElementById('input');
-
+	
 	if(document.all){
 		ansinput.onpropertychange = Check;
 	}
@@ -20,48 +21,77 @@ window.onload = function(){
 	}
 }
 
+function ChooseCase1(){
+  MODE = 0;
+  view.value = "You have choosen English Mode.\nWaiting for file selection...\n";
+}
+
+function ChooseCase2(){
+  MODE = 1;
+  view.value = "You have choosen Text Mode.\nWaiting for file selection...\n";
+  display.value = "";
+}
+
+function ChooseCase3(){
+  MODE = 2;
+  view.value = "You have choosen Ans Text Mode.\nWaiting for file selection...\n";
+  display.value = "";
+}
+
+
+
 function Check(){
-	var ansinput = document.getElementById('input');
 	var ans = "";
 	var t = 0;
+	
+	if(MODE == 0){
+		for(var i in knowledges[cnt].ans){
+				ans += knowledges[cnt].ans[i];
+			t++;
+		}
+	
+		ans = ans.substring(0,t - 2);
+	
+	
+		if(ansinput.value == ans){
+			view.value += (cnt + 1) + ".Correct\n";
+			ansinput.value = '';
+			cnt++;
+			Show();
+		}
+  }
+  else if(MODE == 1){
+    ansinput.value = '';
+    cnt++;
+    Show();
+  }
+	
 
-	for(var i in knowledges[cnt].ans){
-		//if(knowledges[cnt].ans[i] != '\n' && knowledges[cnt].ans[i] != '\r\n')
-			ans += knowledges[cnt].ans[i];
-		t++;
-	}
-	//alert(t);
-	ans = ans.substring(0,t - 2);
-	
-	
-	if(ansinput.value == ans){
-		view.value += "Correct.\n";
-		ansinput.value = '';
-		cnt++;
-		Show();
-	}
 }
 
 fileinput.addEventListener('change', function Display(){
 	
 	var file = fileinput.files[0];
 
-
 	var reader = new FileReader();
 	reader.onload = function(){
 		inputtext = this.result;
-		view.value = "Input finish...\n";
-		Init();
+		if(MODE == 0)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tctrl+i to skip\n\tctrl+o to return.\n";
+    else view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
+    
+		if(MODE == 0)InitCase1();
+    else if(MODE == 1)InitCase2();
+    else if(MODE == 2)InitCase3();
 	};
 	reader.readAsText(file);
 
 });
 
-function Init(){
-	var display = document.getElementById('display');
+function InitCase1(){
 	var data = inputtext;
 	var mode = 0, k = 0;
 
+  knowledges.splice(0, knowledges.lenth);
 	knowledges.push(new Knowledge());
 
 	for(var i in data){
@@ -85,14 +115,62 @@ function Init(){
 			}
 		}		
 	}
+	MAX = k;
+	cnt = 0;
+	Show();
+}
+
+function InitCase2(){
+  var data = inputtext;
+  var mode = 0, k = 0;
+  
+  knowledges.splice(0, knowledges.lenth);
+  knowledges.push(new Knowledge());
+  
+  for(var i in data){
+    if(mode === 0){
+      if(data[i] === '\r\n'){
+        mode = 1;
+      }
+      else{
+        knowledges[k].dis.push(data[i]);
+      }
+    }
+    else{
+      if(data[i] === '\r\n'){
+        mode = 0;
+        knowledges.push(new Knowledge());
+        k++;
+      }
+      else{
+        knowledges[k].ans.push(data[i]);
+        mode = 0;
+      }
+    }
+
+  }
+	MAX = k;
 	cnt = 0;
 	Show();
 }
 
 function Show(){
-	var display = document.getElementById('display');
 	
 	display.value = '';
-	for(var i in knowledges[cnt].dis)
-		display.value = display.value + knowledges[cnt].dis[i];
+	
+	if(cnt > MAX){
+		view.value += "Congratulations, you have finished this text!\n";
+		return;
+	}
+	
+  if(MODE === 0){
+		for(var i in knowledges[cnt].dis)
+			display.value += knowledges[cnt].dis[i];    
+  }
+  else if(MODE === 1){
+    view.value += "\n";
+		for(var i in knowledges[cnt].dis)
+			view.value += knowledges[cnt].dis[i];       
+  }
+
 }
