@@ -68,8 +68,8 @@ function Check(){
   	}
 	else if(MODE == 2){
 		if(ansinput.value != 'i')cnt++;
-		ansinput.value = '';
 		Show();
+		ansinput.value = '';
 	}
 	
 }
@@ -169,11 +169,11 @@ function InitCase3(){
   
   	knowledges.splice(0, knowledges.lenth);
   	knowledges.push(new Knowledge());
-  
+	
   	for(var i = 0; i < data.length; i++){
     	if(mode === 0){
       		if(data[i] < ' '){
-				if(state % 2 == 0)
+				if(state % 2 === 0)
 					knowledges[k].dis.push(data[i]);
 				else
 					knowledges[k].ans.push(data[i]);
@@ -182,7 +182,7 @@ function InitCase3(){
 				i++;
       		}
       		else{
-				if(state % 2 == 0)
+				if(state % 2 === 0)
 					knowledges[k].dis.push(data[i]);
 				else
 					knowledges[k].ans.push(data[i]);
@@ -192,16 +192,18 @@ function InitCase3(){
       		if(data[i] < ' '){
         		mode = 0;
 				i++;
-				if(state % 2 == 0)
+				if(state % 2 === 0)
 					state++;
 				else{
 					state++;
+					
         			knowledges.push(new Knowledge());
+					k++;
 				}
-        		k++;
+        		
       		}
       		else{
-				if(state % 2 == 0)
+				if(state % 2 === 0)
 					knowledges[k].dis.push(data[i]);
 				else
 					knowledges[k].ans.push(data[i]);
@@ -209,7 +211,7 @@ function InitCase3(){
       		}
 		}
 	}
-
+	
 	MAX = k;
   	cnt = 0;
 	Show();
@@ -236,8 +238,8 @@ function Show(){
   	}
 	else if(MODE === 2){
 		var data;
-		if(ansinput.value == 'i')data = knowledges[cnt].dis;
-		else data = knowledges[cnt].ans;
+		if(ansinput.value == 'i')data = knowledges[cnt].ans;
+		else data = knowledges[cnt].dis;
 		
 		for(var i in data)
 			view.value += data[i];
