@@ -66,8 +66,12 @@ function Check(){
     	cnt++;
     	Show();
   	}
+	else if(MODE == 2){
+		if(ansinput.value != 'i')cnt++;
+		ansinput.value = '';
+		Show();
+	}
 	
-
 }
 
 fileinput.addEventListener('change', function Display(){
@@ -78,8 +82,9 @@ fileinput.addEventListener('change', function Display(){
 	reader.onload = function(){
 		inputtext = this.result;
 		if(MODE == 0)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tctrl+i to skip\n\tctrl+o to return.\n";
-    	else view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
-    
+    	else if(MODE == 1)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
+    	else if(MODE == 2)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\ti input to display answer, any other input to skip\n\tctrl+o to return.\n";
+		
 		if(MODE == 0)InitCase1();
     	else if(MODE == 1)InitCase2();
     	else if(MODE == 2)InitCase3();
@@ -129,7 +134,6 @@ function InitCase2(){
   	knowledges.push(new Knowledge());
   
   	for(var i = 0; i < data.length; i++){
-		//alert("i = " + i + " " + data[i]);
     	if(mode === 0){
       		if(data[i] < ' '){
 				knowledges[k].dis.push(data[i]);
@@ -159,6 +163,58 @@ function InitCase2(){
 	Show();
 }
 
+function InitCase3(){
+  	var data = inputtext;
+  	var mode = 0, k = 0, state = 0;
+  
+  	knowledges.splice(0, knowledges.lenth);
+  	knowledges.push(new Knowledge());
+  
+  	for(var i = 0; i < data.length; i++){
+    	if(mode === 0){
+      		if(data[i] < ' '){
+				if(state % 2 == 0)
+					knowledges[k].dis.push(data[i]);
+				else
+					knowledges[k].ans.push(data[i]);
+
+        		mode = 1;
+				i++;
+      		}
+      		else{
+				if(state % 2 == 0)
+					knowledges[k].dis.push(data[i]);
+				else
+					knowledges[k].ans.push(data[i]);
+      		}
+    	}
+    	else{
+      		if(data[i] < ' '){
+        		mode = 0;
+				i++;
+				if(state % 2 == 0)
+					state++;
+				else{
+					state++;
+        			knowledges.push(new Knowledge());
+				}
+        		k++;
+      		}
+      		else{
+				if(state % 2 == 0)
+					knowledges[k].dis.push(data[i]);
+				else
+					knowledges[k].ans.push(data[i]);
+        		mode = 0;
+      		}
+		}
+	}
+
+	MAX = k;
+  	cnt = 0;
+	Show();
+}
+
 function Show(){
 	
 	display.value = '';
@@ -177,9 +233,15 @@ function Show(){
     	view.value += "\n";
 		for(var i in knowledges[cnt].dis)
 			view.value += knowledges[cnt].dis[i];
-		//view.value += "\n";
   	}
-	
+	else if(MODE === 2){
+		var data;
+		if(ansinput.value == 'i')data = knowledges[cnt].dis;
+		else data = knowledges[cnt].ans;
+		
+		for(var i in data)
+			view.value += data[i];
+	}
 	view.scrollTop = view.scrollHeight;
 
 }

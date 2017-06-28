@@ -11,7 +11,7 @@ This tool is plan to support three kind of text.
 
 Case1:
 
-    单词中文 English Word
+	单词中文 English Word
     
 Case2:
 
@@ -19,4 +19,6 @@ Case2:
     
 Case3:
 
-	知识点问题 知识点答案
+	知识点问题
+
+	知识点答案
