@@ -19,6 +19,7 @@ window.onload = function(){
 	else{
 		ansinput.oninput = Check;
 	}
+	ChooseCase1();
 }
 
 function ChooseCase1(){
@@ -59,12 +60,12 @@ function Check(){
 			cnt++;
 			Show();
 		}
-  }
-  else if(MODE == 1){
-    ansinput.value = '';
-    cnt++;
-    Show();
-  }
+  	}
+  	else if(MODE == 1){
+    	ansinput.value = '';
+    	cnt++;
+    	Show();
+  	}
 	
 
 }
@@ -77,11 +78,11 @@ fileinput.addEventListener('change', function Display(){
 	reader.onload = function(){
 		inputtext = this.result;
 		if(MODE == 0)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tctrl+i to skip\n\tctrl+o to return.\n";
-    else view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
+    	else view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
     
 		if(MODE == 0)InitCase1();
-    else if(MODE == 1)InitCase2();
-    else if(MODE == 2)InitCase3();
+    	else if(MODE == 1)InitCase2();
+    	else if(MODE == 2)InitCase3();
 	};
 	reader.readAsText(file);
 
@@ -91,7 +92,7 @@ function InitCase1(){
 	var data = inputtext;
 	var mode = 0, k = 0;
 
-  knowledges.splice(0, knowledges.lenth);
+ 	knowledges.splice(0, knowledges.lenth);
 	knowledges.push(new Knowledge());
 
 	for(var i in data){
@@ -121,36 +122,40 @@ function InitCase1(){
 }
 
 function InitCase2(){
-  var data = inputtext;
-  var mode = 0, k = 0;
+  	var data = inputtext;
+  	var mode = 0, k = 0;
   
-  knowledges.splice(0, knowledges.lenth);
-  knowledges.push(new Knowledge());
+  	knowledges.splice(0, knowledges.lenth);
+  	knowledges.push(new Knowledge());
   
-  for(var i in data){
-    if(mode === 0){
-      if(data[i] === '\r\n'){
-        mode = 1;
-      }
-      else{
-        knowledges[k].dis.push(data[i]);
-      }
-    }
-    else{
-      if(data[i] === '\r\n'){
-        mode = 0;
-        knowledges.push(new Knowledge());
-        k++;
-      }
-      else{
-        knowledges[k].ans.push(data[i]);
-        mode = 0;
-      }
-    }
+  	for(var i = 0; i < data.length; i++){
+		//alert("i = " + i + " " + data[i]);
+    	if(mode === 0){
+      		if(data[i] < ' '){
+				knowledges[k].dis.push(data[i]);
+        		mode = 1;
+				i++;
+      		}
+      		else{
+        		knowledges[k].dis.push(data[i]);
+      		}
+    	}
+    	else{
+      		if(data[i] < ' '){
+        		mode = 0;
+				i++;
+        		knowledges.push(new Knowledge());
+        		k++;
+      		}
+      		else{
+        		knowledges[k].dis.push(data[i]);
+        		mode = 0;
+      		}
+		}
+	}
 
-  }
 	MAX = k;
-	cnt = 0;
+  	cnt = 0;
 	Show();
 }
 
@@ -159,18 +164,22 @@ function Show(){
 	display.value = '';
 	
 	if(cnt > MAX){
-		view.value += "Congratulations, you have finished this text!\n";
+		view.value += "\nCongratulations, you have finished this text!\n";
+		view.scrollTop = view.scrollHeight;
 		return;
 	}
 	
-  if(MODE === 0){
+  	if(MODE === 0){
 		for(var i in knowledges[cnt].dis)
 			display.value += knowledges[cnt].dis[i];    
-  }
-  else if(MODE === 1){
-    view.value += "\n";
+  	}
+  	else if(MODE === 1){
+    	view.value += "\n";
 		for(var i in knowledges[cnt].dis)
-			view.value += knowledges[cnt].dis[i];       
-  }
+			view.value += knowledges[cnt].dis[i];
+		//view.value += "\n";
+  	}
+	
+	view.scrollTop = view.scrollHeight;
 
 }
