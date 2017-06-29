@@ -5,7 +5,8 @@ function Knowledge(){
 
 var knowledges = [];
 var inputtext;
-var cnt = 0, MAX, MODE = 0; //MODE 0 English 1 Text 2 Ans Text
+var cnt = 0, MAX, MODE = 0, RandomMAX = 0; //MODE 0 English 1 Text 2 Ans Text
+var RandomMode = false; 
 var fileinput = document.getElementById('inputfile'),
 	view = document.getElementById('checkview'), //Console
 	ansinput = document.getElementById('input'),
@@ -24,22 +25,64 @@ window.onload = function(){
 
 function ChooseCase1(){
   MODE = 0;
+  RandomMode = false; 
   view.value = "You have choosen English Mode.\nWaiting for file selection...\n";
 }
 
 function ChooseCase2(){
   MODE = 1;
+  RandomMode = false; 
   view.value = "You have choosen Text Mode.\nWaiting for file selection...\n";
   display.value = "";
 }
 
 function ChooseCase3(){
   MODE = 2;
+  RandomMode = false; 
   view.value = "You have choosen Ans Text Mode.\nWaiting for file selection...\n";
   display.value = "";
 }
 
+function hotkey(){
+	var a = window.event.keyCode;
+	if(a === 73 && event.ctrlKey){
+		if(MODE === 0){
+			Getcnt();
+			Show();
+		}
+	}
+	else if(a === 85 && event.ctrlKey && event.altKey){
+		RandomMAX = MAX;
+		if(!RandomMode){
+			view.value += "Random Mode\n";
+			RandomMode = true;
+		}
+		else{
+			view.value += "Normal Mode\n";
+			RandomMode = false;
+		}
+	}
+}
 
+document.onkeydown = hotkey;
+
+function Getcnt(){
+	if(RandomMode === false){
+		cnt++;
+	}
+	else{
+		if(RandomMAX > 0){
+			if(cnt != -1){
+				knowledges.splice(cnt, 1);
+				RandomMAX--;
+			}
+			cnt = Math.floor(Math.random()*RandomMAX);
+		}
+		else{
+			cnt = MAX + 1;
+		}
+	}
+}
 
 function Check(){
 	var ans = "";
@@ -57,17 +100,17 @@ function Check(){
 		if(ansinput.value == ans){
 			view.value += (cnt + 1) + ".Correct\n";
 			ansinput.value = '';
-			cnt++;
+			Getcnt();
 			Show();
 		}
   	}
   	else if(MODE == 1){
     	ansinput.value = '';
-    	cnt++;
+    	Getcnt();
     	Show();
   	}
 	else if(MODE == 2){
-		if(ansinput.value != 'i')cnt++;
+		if(ansinput.value != 'i')Getcnt();
 		Show();
 		ansinput.value = '';
 	}
@@ -81,9 +124,9 @@ fileinput.addEventListener('change', function Display(){
 	var reader = new FileReader();
 	reader.onload = function(){
 		inputtext = this.result;
-		if(MODE == 0)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tctrl+i to skip\n\tctrl+o to return.\n";
-    	else if(MODE == 1)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\tAny input to skip\n\tctrl+o to return.\n";
-    	else if(MODE == 2)view.value += "Input finished...\nPress:\n\tctrl+1 to random mode (or switch normal mode).\n\ti input to display answer, any other input to skip\n\tctrl+o to return.\n";
+		if(MODE == 0)view.value += "Input finished...\nPress:\n\tctrl+alt+u to random mode (or switch normal mode)\n\tctrl+i to skip\n\tctrl+o to return\n";
+    	else if(MODE == 1)view.value += "Input finished...\nPress:\n\tctrl+alt+u to random mode (or switch normal mode)\n\tAny input to skip\n\tctrl+o to return\n";
+    	else if(MODE == 2)view.value += "Input finished...\nPress:\n\tctrl+alt+u to random mode (or switch normal mode)\n\ti input to display answer, any other input to skip\n\tctrl+o to return\n";
 		
 		if(MODE == 0)InitCase1();
     	else if(MODE == 1)InitCase2();
@@ -122,7 +165,8 @@ function InitCase1(){
 		}		
 	}
 	MAX = k;
-	cnt = 0;
+	cnt = -1;
+	Getcnt();
 	Show();
 }
 
@@ -159,7 +203,8 @@ function InitCase2(){
 	}
 
 	MAX = k;
-  	cnt = 0;
+  	cnt = -1;
+	Getcnt();
 	Show();
 }
 
@@ -213,7 +258,8 @@ function InitCase3(){
 	}
 	
 	MAX = k;
-  	cnt = 0;
+  	cnt = -1;
+	Getcnt();
 	Show();
 }
 
