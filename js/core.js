@@ -26,19 +26,19 @@ window.onload = function(){
 function ChooseCase1(){
   MODE = 0;
   RandomMode = false; 
-  view.value = "You have choosen English Mode.\nWaiting for file selection...\n";
+  view.value = "You have chosen English Mode.\nWaiting for file selection...\n";
 }
 
 function ChooseCase2(){
   MODE = 1;
   RandomMode = false; 
-  view.value = "You have choosen Text Mode.\nWaiting for file selection...\n";
+  view.value = "You have chosen Text Mode.\nWaiting for file selection...\n";
 }
 
 function ChooseCase3(){
   MODE = 2;
   RandomMode = false; 
-  view.value = "You have choosen Ans Text Mode.\nWaiting for file selection...\n";
+  view.value = "You have chosen Ans Text Mode.\nWaiting for file selection...\n";
   display.value = "";
 }
 
